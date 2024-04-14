@@ -65,6 +65,29 @@ function game_loop()
     // Clear previous frame
     context.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Checking for user input
+    if (keys.a && !keys.d)
+    {
+        // Player should move left
+        player.x_velocity = -10;
+    }
+    else if (keys.d && !keys.a)
+    {
+        // Player should move right
+        player.x_velocity = 10;
+    }
+    else
+    {
+        // Player should not move
+        player.x_velocity = 0;
+    }
+
+    // Player should jump
+    if (keys.space)
+    {
+        player.y_velocity = -15;
+    }
+
     // Apply gravity if player is in the air
     if (player.y + player.height + player.y_velocity < canvas.height)
     {
