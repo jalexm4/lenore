@@ -13,7 +13,7 @@
 // -- Fantasy Knight (aamatniekss) @ https://aamatniekss.itch.io/fantasy-knight-free-pixelart-animated-character
 
 // --- Imports ---
-import { Keys } from "./interfaces.js";                             // Interfaces - Only for TypeScript
+import { Keys, CollisionObject } from "./interfaces.js";                             // Interfaces - Only for TypeScript
 import { handleKeyDown, handleKeyUp } from "./event_handlers.js";   // User Input Event Listeners
 
 // Wait for all resources to be loaded before executing
@@ -138,6 +138,42 @@ function game_loop()
     player.x += player.x_velocity;
     player.y += player.y_velocity;
 
+    // Check for Vertical Collisions
+    for (let i = 0, n = collison_tiles.length; i < n; i++)
+    {
+        // Check if the player and any collison block are colliding  
+        if (aabb_collison_detection({x: player.x, y: player.y, width: player.width, height: player.height}, {x: collison_tiles[i].x, y: collison_tiles[i].y, width: collison_tiles[i].width, height: collison_tiles[i].height}))
+        {
+            // Player is moving downwards
+            if (player.y_velocity > 0)
+                {
+                    // Kill vertical velocity
+                    player.y_velocity = 0;
+
+                    // Update player Y pos to be on top of the collision tile
+                    const offset = player.y - player.y + player.height;
+                    player.y = collison_tiles[i].y - offset - 0.01;
+
+                    // No need to check for any more collisions
+                    break;
+                }
+    
+                // Player is moving up
+                if (player.y_velocity < 0)
+                {
+                    // Kill vertical velocity
+                    player.y_velocity = 0;
+
+                    // Update player Y pos to be below the collsion tile
+                    const offset = player.y - player.y;
+                    player.y = collison_tiles[i].y + collison_tiles[i].height - offset + 0.01;
+                    
+                    // No need to check for any more collisions
+                    break;
+                }
+        }
+    }
+
     // Render Background 
     context.drawImage(background, background_x_offset, background_y_offset);
 
@@ -156,6 +192,13 @@ function game_loop()
     requestAnimationFrame(game_loop);
 }
 
+function aabb_collison_detection(rect1: CollisionObject, rect2: CollisionObject)
+{
+    // Axis Aligned Bounding Box Collision Detection.
+    // Fine for current scope of game but should be replaced with some advanced datastructures and detection algorithms if expanding
+
+    return (rect1.y + rect1.height >= rect2.y && rect1.y <= rect2.y + rect2.height && rect1.x <= rect2.x + rect2.width && rect1.x + rect1.width >= rect2.x);
+}
 
 function setup_collisions()
 {
