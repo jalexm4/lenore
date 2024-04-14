@@ -43,6 +43,14 @@ const player = {
         x: 0, // Animation offset
         y: 0 // Sprite type offset
     },
+    hitbox_x_offset: 130, //
+    hitbox_y_offset: 130, //
+    hitbox: {
+        x: 0, //
+        y: 0, //
+        width: 70, //
+        height: 112, //
+    }
 };
 // Which keys are currently being pressed for a frame
 const keys = {
@@ -58,6 +66,9 @@ function main() {
     canvas.height = window.innerHeight;
     // Set background y offset to position image bottom with canvas bottom.
     background_y_offset = -background.height + canvas.height;
+    // Setup player hitbox
+    player.hitbox.x = player.x + player.hitbox_x_offset;
+    player.hitbox.y = player.y + player.hitbox_y_offset;
     // Setup Collision Blocks
     setup_collisions();
     // Start User Input Event Listeners
@@ -89,16 +100,19 @@ function game_loop() {
     }
     // Apply X velocity 
     player.x += player.x_velocity;
-    // Check for Horziontal Collisions
+    // Update hitbox for horizontal collsions
+    player.hitbox.x = player.x + player.hitbox_x_offset;
+    player.hitbox.y = player.y + player.hitbox_y_offset;
+    // Check for Horizontal  Collisions
     for (let i = 0, n = collison_tiles.length; i < n; i++) {
         // Check if the player and any collison block are colliding
-        if (aabb_collison_detection({ x: player.x, y: player.y, width: player.width, height: player.height }, { x: collison_tiles[i].x, y: collison_tiles[i].y, width: collison_tiles[i].width, height: collison_tiles[i].height })) {
+        if (aabb_collison_detection({ x: player.hitbox.x, y: player.hitbox.y, width: player.hitbox.width, height: player.hitbox.height }, { x: collison_tiles[i].x, y: collison_tiles[i].y, width: collison_tiles[i].width, height: collison_tiles[i].height })) {
             // Player is moving right
             if (player.x_velocity > 0) {
                 // Kill horizontal velocity
                 player.x_velocity = 0;
                 // Update player Y pos to be to the left of the collision tile
-                const offset = player.x - player.x + player.width;
+                const offset = player.hitbox.x - player.x + player.hitbox.width;
                 player.x = collison_tiles[i].x - player.width - offset - 0.01;
                 // No need to check for any more collisions
                 break;
@@ -108,7 +122,7 @@ function game_loop() {
                 // Kill horizontal velocity
                 player.x_velocity = 0;
                 // Update player Y pos to be to the right of the collision tile
-                const offset = player.x - player.x;
+                const offset = player.hitbox.x - player.x;
                 player.x = collison_tiles[i].x + collison_tiles[i].width - offset + 0.01;
                 // No need to check for any more collisions
                 break;
@@ -125,16 +139,19 @@ function game_loop() {
     }
     // Apply Y velocity
     player.y += player.y_velocity;
+    // Update hitbox again for vertical collisions
+    player.hitbox.x = player.x + player.hitbox_x_offset;
+    player.hitbox.y = player.y + player.hitbox_y_offset;
     // Check for Vertical Collisions
     for (let i = 0, n = collison_tiles.length; i < n; i++) {
         // Check if the player and any collison block are colliding  
-        if (aabb_collison_detection({ x: player.x, y: player.y, width: player.width, height: player.height }, { x: collison_tiles[i].x, y: collison_tiles[i].y, width: collison_tiles[i].width, height: collison_tiles[i].height })) {
+        if (aabb_collison_detection({ x: player.hitbox.x, y: player.hitbox.y, width: player.hitbox.width, height: player.hitbox.height }, { x: collison_tiles[i].x, y: collison_tiles[i].y, width: collison_tiles[i].width, height: collison_tiles[i].height })) {
             // Player is moving downwards
             if (player.y_velocity > 0) {
                 // Kill vertical velocity
                 player.y_velocity = 0;
                 // Update player Y pos to be on top of the collision tile
-                const offset = player.y - player.y + player.height;
+                const offset = player.hitbox.y - player.y + player.hitbox.height;
                 player.y = collison_tiles[i].y - offset - 0.01;
                 // No need to check for any more collisions
                 break;
@@ -144,13 +161,16 @@ function game_loop() {
                 // Kill vertical velocity
                 player.y_velocity = 0;
                 // Update player Y pos to be below the collsion tile
-                const offset = player.y - player.y;
+                const offset = player.hitbox.y - player.y;
                 player.y = collison_tiles[i].y + collison_tiles[i].height - offset + 0.01;
                 // No need to check for any more collisions
                 break;
             }
         }
     }
+    // Final hitbox update before rendering
+    player.hitbox.x = player.x + player.hitbox_x_offset;
+    player.hitbox.y = player.y + player.hitbox_y_offset;
     // Render Background 
     context.drawImage(background, background_x_offset, background_y_offset);
     // Render Player
@@ -169,6 +189,9 @@ function game_loop() {
     for (let i = 0; i < collison_tiles.length; i++) {
         context.fillRect(collison_tiles[i].x, collison_tiles[i].y, collison_tiles[i].width, collison_tiles[i].height);
     }
+    // Visual - Draw Player Hitbox
+    context.fillStyle = "rgba(0, 255, 0, 0.5)";
+    context.fillRect(player.hitbox.x, player.hitbox.y, player.hitbox.width, player.hitbox.height);
     // Draw next frame
     requestAnimationFrame(game_loop);
 }
