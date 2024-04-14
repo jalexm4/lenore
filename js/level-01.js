@@ -23,6 +23,8 @@ class collison_tile {
 // --- Loaded Assets ---
 const background = new Image();
 background.src = "/assets/levels/level1.png";
+const player_spritesheet = new Image();
+player_spritesheet.src = "/assets/player/spritesheet.png";
 // Canvas API
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
@@ -33,10 +35,14 @@ const collison_tiles = [];
 const player = {
     x: 100, // 2D space X coordinate (Starting Pos)
     y: 100, // 2D space Y coordinate (Starting Pos)
-    width: 100, // Width
-    height: 100, // Height
+    width: player_spritesheet.width / 10, // Width of a single player sprite
+    height: player_spritesheet.height / 8, // Height of a single player sprite
     x_velocity: 0, // Movement to apply on X axis
     y_velocity: 0, // Movement to apply on Y axis
+    crop: {
+        x: 0, // Animation offset
+        y: 0 // Sprite type offset
+    },
 };
 // Which keys are currently being pressed for a frame
 const keys = {
@@ -148,8 +154,16 @@ function game_loop() {
     // Render Background 
     context.drawImage(background, background_x_offset, background_y_offset);
     // Render Player
-    context.fillStyle = "white";
-    context.fillRect(player.x, player.y, player.width, player.height);
+    context.drawImage(// Nine Argument Version
+    player_spritesheet, // Image to be drawn
+    player.crop.x, // Cropping rectangle x pos
+    player.crop.y, // Cropping rectangle y pos 
+    player.width, // Crop width (same as player)
+    player.height, // Crop height (same as player)
+    player.x, // Destination X
+    player.y, // Destination Y
+    player.width, // Destination Width
+    player.height);
     // Visual - Draw Collision Blocks
     context.fillStyle = "rgba(255, 0, 0, 0.5)";
     for (let i = 0; i < collison_tiles.length; i++) {
