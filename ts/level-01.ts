@@ -22,9 +22,16 @@ window.addEventListener("load", main);
 // --- Constants ---
 const GRAVITY = 1;  // Downward force
 
+// --- Loaded Assets ---
+const background = new Image();
+background.src = "/assets/levels/level1.png";
+
 // Canvas API
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+
+let background_x_offset = 0;
+let background_y_offset = 0;
 
 // Player Object
 const player = {
@@ -50,6 +57,9 @@ function main()
     // Set canvas size to viewport size
     canvas.width = window.innerWidth;;
     canvas.height = window.innerHeight;
+
+    // Set background y offset to position image bottom with canvas bottom.
+    background_y_offset = -background.height + canvas.height;
 
     // Start User Input Event Listeners
     handleKeyDown(keys);
@@ -104,8 +114,7 @@ function game_loop()
     player.y += player.y_velocity;
 
     // Render Background 
-    context.fillStyle = "black";
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(background, background_x_offset, background_y_offset);
 
     // Render Player
     context.fillStyle = "white";

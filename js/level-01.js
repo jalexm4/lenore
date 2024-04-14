@@ -8,9 +8,14 @@ import { handleKeyDown, handleKeyUp } from "./event_handlers.js"; // User Input 
 window.addEventListener("load", main);
 // --- Constants ---
 const GRAVITY = 1; // Downward force
+// --- Loaded Assets ---
+const background = new Image();
+background.src = "/assets/levels/level1.png";
 // Canvas API
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
+let background_x_offset = 0;
+let background_y_offset = 0;
 // Player Object
 const player = {
     x: 100, // 2D space X coordinate (Starting Pos)
@@ -32,6 +37,8 @@ function main() {
     canvas.width = window.innerWidth;
     ;
     canvas.height = window.innerHeight;
+    // Set background y offset to position image bottom with canvas bottom.
+    background_y_offset = -background.height + canvas.height;
     // Start User Input Event Listeners
     handleKeyDown(keys);
     handleKeyUp(keys);
@@ -71,8 +78,7 @@ function game_loop() {
     player.x += player.x_velocity;
     player.y += player.y_velocity;
     // Render Background 
-    context.fillStyle = "black";
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(background, background_x_offset, background_y_offset);
     // Render Player
     context.fillStyle = "white";
     context.fillRect(player.x, player.y, player.width, player.height);
