@@ -42,6 +42,17 @@ function main() {
 function game_loop() {
     // Clear previous frame
     context.clearRect(0, 0, canvas.width, canvas.height);
+    // Apply gravity if player is in the air
+    if (player.y + player.height + player.y_velocity < canvas.height) {
+        player.y_velocity += GRAVITY;
+    }
+    else {
+        // On the ground - Y position shouldnt update
+        player.y_velocity = 0;
+    }
+    // Apply any velocity on x and y axis
+    player.x += player.x_velocity;
+    player.y += player.y_velocity;
     // Render Background 
     context.fillStyle = "black";
     context.fillRect(0, 0, canvas.width, canvas.height);
