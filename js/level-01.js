@@ -81,6 +81,34 @@ function game_loop() {
     if (keys.space) {
         player.y_velocity = -15;
     }
+    // Apply X velocity 
+    player.x += player.x_velocity;
+    // Check for Horziontal Collisions
+    for (let i = 0, n = collison_tiles.length; i < n; i++) {
+        // Check if the player and any collison block are colliding
+        if (aabb_collison_detection({ x: player.x, y: player.y, width: player.width, height: player.height }, { x: collison_tiles[i].x, y: collison_tiles[i].y, width: collison_tiles[i].width, height: collison_tiles[i].height })) {
+            // Player is moving right
+            if (player.x_velocity > 0) {
+                // Kill horizontal velocity
+                player.x_velocity = 0;
+                // Update player Y pos to be to the left of the collision tile
+                const offset = player.x - player.x + player.width;
+                player.x = collison_tiles[i].x - player.width - offset - 0.01;
+                // No need to check for any more collisions
+                break;
+            }
+            // Player is moving left 
+            if (player.x_velocity < 0) {
+                // Kill horizontal velocity
+                player.x_velocity = 0;
+                // Update player Y pos to be to the right of the collision tile
+                const offset = player.x - player.x;
+                player.x = collison_tiles[i].x + collison_tiles[i].width - offset + 0.01;
+                // No need to check for any more collisions
+                break;
+            }
+        }
+    }
     // Apply gravity if player is in the air
     if (player.y + player.height + player.y_velocity < canvas.height) {
         player.y_velocity += GRAVITY;
@@ -89,8 +117,7 @@ function game_loop() {
         // On the ground - Y position shouldnt update
         player.y_velocity = 0;
     }
-    // Apply any velocity on x and y axis
-    player.x += player.x_velocity;
+    // Apply Y velocity
     player.y += player.y_velocity;
     // Check for Vertical Collisions
     for (let i = 0, n = collison_tiles.length; i < n; i++) {
