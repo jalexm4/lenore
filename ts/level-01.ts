@@ -13,7 +13,7 @@
 // -- Fantasy Knight (aamatniekss) @ https://aamatniekss.itch.io/fantasy-knight-free-pixelart-animated-character
 
 // --- Imports ---
-import { Keys, CollisionObject } from "./interfaces.js";                             // Interfaces - Only for TypeScript
+import { Keys, CollisionObject } from "./interfaces.js";            // Interfaces - Only for TypeScript
 import { handleKeyDown, handleKeyUp } from "./event_handlers.js";   // User Input Event Listeners
 
 // Wait for all resources to be loaded before executing
@@ -26,7 +26,7 @@ const TILE = 24;    //
 
 // --- Classes ---
 
-// ...
+// Used as a constructor to create a collison tile object
 class collison_tile
 {
     x: number;
@@ -36,10 +36,10 @@ class collison_tile
 
     constructor(x: number, y: number)
     {
-        this.x = x * SCALE + background_x_offset;
-        this.y = y * SCALE + background_y_offset;
-        this.width = TILE * SCALE;
-        this.height = TILE * SCALE;
+        this.x = x * SCALE + background_x_offset;   // X should be offseted by the scale (300%) and horizontal perspective shift
+        this.y = y * SCALE + background_y_offset;   // Y should be offseted by the scale (300%) and vertical perspective shift
+        this.width = TILE * SCALE;                  // 24x24 Tilesize * 300% Zoom
+        this.height = TILE * SCALE;                 // 24x24 Tilesize * 300% Zoom
     }
 }
 
@@ -54,6 +54,7 @@ player_spritesheet.src = "/assets/player/spritesheet.png";
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
 const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 
+// Other - Find a better spot
 let background_x_offset = 0;
 let background_y_offset = 0;
 const collison_tiles: collison_tile[] = [];
@@ -73,21 +74,21 @@ const player = {
         y: 0                                // Sprite type offset
     },
 
-    hitbox_x_offset: 130,                   //
-    hitbox_y_offset: 130,                   //
-    hitbox: {                               //
-        x: 0,                               //
-        y: 0,                               //
-        width: 70,                          //
-        height: 112,                        //
-    }
+    hitbox: {                               // Hitbox represents the player size in game-world not the sprite image / spritesheet
+        x: 0,                               // Tied to player x + offset
+        y: 0,                               // Tied to player y + offset
+        width: 70,                          // Horziontal Length of player in game-world
+        height: 112,                        // Vertical Length of player in game-world
+    },
+    hitbox_x_offset: 130,                   // Amount to offset from left side of player image being drawn
+    hitbox_y_offset: 130,                   // Amount to offset from top side of player image being drawn
 };
 
 // Which keys are currently being pressed for a frame
 const keys: Keys = {
-    a: false,
-    d: false,
-    space: false,
+    a: false,           // Move left on true
+    d: false,           // Move right on true
+    space: false,       // Jump on true
 };
 
 // Starting function - Setups up the game
@@ -276,6 +277,7 @@ function game_loop()
     requestAnimationFrame(game_loop);
 }
 
+// Returns True if collision detected between rect1 and rect2. False otherwise.
 function aabb_collison_detection(rect1: CollisionObject, rect2: CollisionObject)
 {
     // Axis Aligned Bounding Box Collision Detection.
@@ -284,6 +286,7 @@ function aabb_collison_detection(rect1: CollisionObject, rect2: CollisionObject)
     return (rect1.y + rect1.height >= rect2.y && rect1.y <= rect2.y + rect2.height && rect1.x <= rect2.x + rect2.width && rect1.x + rect1.width >= rect2.x);
 }
 
+// Generates collision tiles from raw tiledata
 function setup_collisions()
 {
     let columns = raw_tile_data.length;
@@ -306,6 +309,8 @@ function setup_collisions()
 }
 
 // Tile data for level 1
+// 0 - Ignore/Placeholder
+// 316 - Collision tile
 const raw_tile_data = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
