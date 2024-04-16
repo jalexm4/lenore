@@ -3,6 +3,7 @@
 // 2D Sidescrolling Game
 // MIT License
 //
+import { player, player_state, player_dir } from "./player.js"; // Player object and enums
 import { handleKeyDown, handleKeyUp } from "./event_handlers.js"; // User Input Event Listeners
 // Wait for all resources to be loaded before executing
 window.addEventListener("load", main);
@@ -23,8 +24,7 @@ class collison_tile {
 // --- Loaded Assets ---
 const background = new Image();
 background.src = "/assets/levels/level1.png";
-const player_spritesheet = new Image();
-player_spritesheet.src = "/assets/player/spritesheet.png";
+player.spritesheet.src = "/assets/player/spritesheet.png";
 // Canvas API
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
@@ -32,27 +32,6 @@ const context = canvas.getContext("2d");
 let background_x_offset = 0;
 let background_y_offset = 0;
 const collison_tiles = [];
-// Player Object
-const player = {
-    x: 100, // 2D space X coordinate (Starting Pos)
-    y: 100, // 2D space Y coordinate (Starting Pos)
-    width: player_spritesheet.width / 10, // Width of a single player sprite
-    height: player_spritesheet.height / 8, // Height of a single player sprite
-    x_velocity: 0, // Movement to apply on X axis
-    y_velocity: 0, // Movement to apply on Y axis
-    crop: {
-        x: 0, // Animation offset
-        y: 0 // Sprite type offset
-    },
-    hitbox: {
-        x: 0, // Tied to player x + offset
-        y: 0, // Tied to player y + offset
-        width: 70, // Horziontal Length of player in game-world
-        height: 112, // Vertical Length of player in game-world
-    },
-    hitbox_x_offset: 130, // Amount to offset from left side of player image being drawn
-    hitbox_y_offset: 130, // Amount to offset from top side of player image being drawn
-};
 // Which keys are currently being pressed for a frame
 const keys = {
     a: false, // Move left on true
@@ -70,6 +49,13 @@ function main() {
     // Setup player hitbox
     player.hitbox.x = player.x + player.hitbox_x_offset;
     player.hitbox.y = player.y + player.hitbox_y_offset;
+    // Set spritesheet
+    // Set width and height
+    player.width = player.spritesheet.width / 10;
+    player.height = player.spritesheet.height / 8;
+    // Set starting IDLE paramters
+    player.sprite_animation.buffer = player.indices.idle.buffer;
+    player.sprite_animation.max = player.indices.idle.max - 1;
     // Setup Collision Blocks
     setup_collisions();
     // Start User Input Event Listeners
@@ -83,22 +69,22 @@ function game_loop() {
     // Clear previous frame
     context.clearRect(0, 0, canvas.width, canvas.height);
     // Checking for user input
-    if (keys.a && !keys.d) {
-        // Player should move left
-        player.x_velocity = -10;
+    if (keys.space) {
+        player.state = player_state.JUMP;
     }
     else if (keys.d && !keys.a) {
-        // Player should move right
-        player.x_velocity = 10;
+        player.state = player_state.RUN;
+        player.direction = player_dir.RIGHT;
+    }
+    else if (keys.a && !keys.d) {
+        player.state = player_state.RUN;
+        player.direction = player_dir.LEFT;
     }
     else {
-        // Player should not move
-        player.x_velocity = 0;
+        player.state = player_state.IDLE;
     }
-    // Player should jump
-    if (keys.space) {
-        player.y_velocity = -15;
-    }
+    // Attempt to tranistion player to another state
+    switch_state();
     // Apply X velocity 
     player.x += player.x_velocity;
     // Update hitbox for horizontal collsions
@@ -113,8 +99,8 @@ function game_loop() {
                 // Kill horizontal velocity
                 player.x_velocity = 0;
                 // Update player Y pos to be to the left of the collision tile
-                const offset = player.hitbox.x - player.x + player.hitbox.width;
-                player.x = collison_tiles[i].x - player.width - offset - 0.01;
+                const offset = player.hitbox.x - player.x;
+                player.x = collison_tiles[i].x - player.hitbox.width - offset - 0.01;
                 // No need to check for any more collisions
                 break;
             }
@@ -172,11 +158,13 @@ function game_loop() {
     // Final hitbox update before rendering
     player.hitbox.x = player.x + player.hitbox_x_offset;
     player.hitbox.y = player.y + player.hitbox_y_offset;
+    // Iterate across the sprites to create a animation
+    player.crop.x = player.sprite_animation.current_frame * player.width;
     // Render Background 
     context.drawImage(background, background_x_offset, background_y_offset);
     // Render Player
     context.drawImage(// Nine Argument Version
-    player_spritesheet, // Image to be drawn
+    player.spritesheet, // Image to be drawn
     player.crop.x, // Cropping rectangle x pos
     player.crop.y, // Cropping rectangle y pos 
     player.width, // Crop width (same as player)
@@ -193,8 +181,77 @@ function game_loop() {
     // Visual - Draw Player Hitbox
     context.fillStyle = "rgba(0, 255, 0, 0.5)";
     context.fillRect(player.hitbox.x, player.hitbox.y, player.hitbox.width, player.hitbox.height);
+    // Move to next player sprite frame
+    player.sprite_animation.elapsed++;
+    if (player.sprite_animation.elapsed % player.sprite_animation.buffer == 0) {
+        if (player.sprite_animation.current_frame >= player.sprite_animation.max) {
+            player.sprite_animation.current_frame = 0;
+        }
+        else {
+            player.sprite_animation.current_frame++;
+        }
+    }
     // Draw next frame
     requestAnimationFrame(game_loop);
+}
+// Switch player between its animation states
+function switch_state() {
+    switch (player.state) {
+        case player_state.JUMP:
+            if (player.previous_state != player_state.JUMP) {
+                player.previous_state = player.state;
+                player.y_velocity = player.jump_height;
+            }
+            break;
+        case player_state.IDLE:
+            // Transition to idle state if player is in a different state
+            if (player.previous_state != player_state.IDLE) {
+                //
+                player.previous_state = player.state;
+                // Reset back to first sprite animation frame
+                player.sprite_animation.current_frame = 0;
+                //
+                player.sprite_animation.buffer = player.indices.idle.buffer;
+                player.sprite_animation.max = player.indices.idle.max - 1;
+                if (player.direction == player_dir.RIGHT) {
+                    player.crop.y = player.indices.idle.right;
+                }
+                else {
+                    player.crop.y = player.indices.idle.left;
+                }
+                // Kill velocity
+                player.x_velocity = 0;
+            }
+            break;
+        case player_state.RUN:
+            //
+            if (player.previous_state != player_state.RUN) {
+                //
+                player.previous_state = player.state;
+                // Reset back to first sprite animation frame
+                player.sprite_animation.current_frame = 0;
+                //
+                player.sprite_animation.buffer = player.indices.run.buffer;
+                player.sprite_animation.max = player.indices.run.max - 1;
+                if (player.direction == player_dir.RIGHT) {
+                    //
+                    player.x_velocity = player.speed;
+                    //
+                    player.crop.y = player.indices.run.right;
+                }
+                else {
+                    //
+                    player.x_velocity = -player.speed;
+                    //
+                    player.crop.y = player.indices.run.left;
+                }
+            }
+            break;
+        default:
+            // Skip
+            break;
+    }
+    return;
 }
 // Returns True if collision detected between rect1 and rect2. False otherwise.
 function aabb_collison_detection(rect1, rect2) {
