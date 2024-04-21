@@ -52,12 +52,12 @@ h1 {
 
 /* Flexbox column split half the width */
 .image-content {
-    flex: 0 0 50%;
+    flex: 0 0 40%;
 }
 
 /* Flexbox column split half the width */
 .about-content {
-    flex: 0 0 50%;
+    flex: 0 0 40%;
 }
 
 /* Padding between columns */
