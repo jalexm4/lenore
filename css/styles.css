@@ -1,0 +1,79 @@
+* {
+    /* CSS Reset - No margins/padding by default */
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    /* Ensure full window height is being used rather than fit to content size */
+    height: 100%;
+
+    /* Background image of the game */
+    background-image: url("/assets/ui/background.png");
+    background-size: cover;
+    background-position: center;
+
+    /* Using flexbox to center title/buttons */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    /* Container should span full height of window */
+    height: 100vh;
+
+    /*  */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#title {
+    font-size: 48px;
+    font-weight: bold;
+    font-family: Helvetica;
+    color: #FFFFFF;
+
+    text-align: center;
+}
+
+/* Start/Levels/Settings/Credits */
+.buttons-main {
+    /* Align in column */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* About/Tutorial */
+.buttons-bottom {
+    /* Align in row */
+    display: flex;
+}
+
+button {
+    /* Position buttons next to each other with common padding/margin */
+    display: inline-block;
+    
+    /* Change the mouse cursor icon on hover */
+    cursor: pointer;
+    background-color: #2E2E2E;
+
+    /* Button size */
+    width: 150px;
+    padding: 10px 20px;
+    margin: 10px;
+    
+    /* Text */
+    font-size: 16px;
+    color: #FFFFFF;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: none;
+
+    /* Border */
+    border: 2px solid #FFFFFF;
+    border-radius: 5px;
+}
