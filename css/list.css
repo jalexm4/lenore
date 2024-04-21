@@ -1,0 +1,54 @@
+* {
+    /* Fixes unequal border outlines */
+    box-sizing: border-box; 
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    font-family: Arial, sans-serif;
+
+    background-image: url("/assets/ui/background.png");
+    background-size: cover;
+    background-position: center;
+
+    /* Strech background image to full height and width of window */
+    height: 100vh;
+    width: 100vh;
+}
+
+.container {
+    /* Position rectanlge content box in middle of window */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    /* Using Flexbox to vertically stav */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    /* Portional fixed box size */
+    min-height: 25vh;
+    width: 25vw;
+    max-width: 50%; 
+    
+    border: 1px solid #000;
+}
+  
+.box {
+    flex: 1;
+    width: 100%; 
+    background-color: #f0f0f0;
+    border: 2px solid #000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    font-size: 20px;
+    text-decoration: none
+}
+
