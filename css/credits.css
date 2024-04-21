@@ -1,0 +1,84 @@
+html, body {
+    /* Use full height of window*/
+    height: 100%;
+}
+
+body {
+    /* Null Margins */
+    margin: 0;
+    
+    /* Use Arial */
+    font-family: Arial, sans-serif;
+
+    /* Use flexbox to layout window */
+    display: flex;
+    flex-direction: column;
+
+    /* Off white background */
+    background-color: #f0f0f0;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+
+    padding: 20px;
+
+    /* Use Flexbox to further split header into two */
+    display: flex;
+    align-items: center;
+}
+
+.header-back {
+    /* Small 10% width corner for returning to landing page */
+    flex: 0 0 10%;
+    background-color: #333;
+}
+
+h1 {
+    flex: 1;
+    text-align: center;
+    
+    /* Ensure top/bottom have no margin */
+    margin: 0;
+    
+    /* Scale text backwards the width taken for return button (10%) */
+    margin-right: auto;
+    margin-left: -10%;
+}
+
+.container {
+    flex: 1;
+
+    /* Content is centered */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* Credits appear vertically */
+    flex-direction: column;
+
+    /* Text is centered */
+    text-align: center;
+}
+
+section {
+    /* Ensures different text-length sections appear the same */
+    min-width: 30vw;
+}
+
+p {
+    /* Make font easier to read */
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    font-size: 10px;
+    text-align: center;
+  }
+  
