@@ -1,0 +1,98 @@
+* {
+    /* Fixes unequal border outlines */
+    box-sizing: border-box; 
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    
+    font-family: Arial, sans-serif;
+
+    background-image: url("/assets/ui/background.png");
+    background-size: cover;
+    background-position: center;
+
+    /* Strech background image to full height and width of window */
+    height: 100vh;
+    width: 100vh;
+}
+
+.container {
+    /* Position rectangle content box in middle of window */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    /* Rectangle should be 50% of the window */
+    width: 50vw;
+
+    background-color: #f0f0f0;
+    border: 2px solid #ddd;
+    
+    /* Flexbox to split rectangle into sections */
+    display: flex;
+    justify-content: space-between;
+}
+
+.settings-column {
+    /* Left hand side - 35% of the recantagle to vertically stack settings */
+    flex: 0 0 35%;
+    border-right: 2px solid #ddd;
+}
+
+.settings-list {
+    /* Remove bullet points */
+    list-style-type: none;
+
+    /* No padding/margin */
+    padding: 0;
+    margin: 0;
+}
+
+.setting-item {
+    /* Change mouse icon */
+    cursor: pointer;
+
+    padding: 20px;
+    font-size: 18px;
+
+    border-bottom: 2px solid #ddd;
+}
+
+.setting-item:last-child {
+    /* Don't add a bottom border to last setting item */
+    border: 0px solid white;
+}
+
+.setting-item:hover, .setting-item.active {
+    /* Currently active setting and hovered setting should be highlighted */
+    background-color: #d7d7d7;
+    border: 1px solid #d7d7d7;
+}
+
+.content-column {
+    /* Where the specifc settings go. 65% of the container width */
+    flex: 0 0 65%;
+    padding-left: 30px;
+}
+
+.content-box {
+    /* Hide setting content */
+    display: none;
+    margin-bottom: 30px;
+}
+
+.content-box:first-child {
+    /* Required to show the first selected setting content */
+    display: block;
+}
+
+.content-title {
+    margin-top: 20px;
+    border-bottom: 2px solid #d7d7d7; 
+    padding-bottom: 15px;
+    font-size: 24px;
+}
+
