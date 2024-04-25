@@ -25,6 +25,7 @@ export const player = {
     direction: player_dir.RIGHT, // Direction the player is facing
     state: player_state.IDLE, // Current state the player is in
     previous_state: player_state.IDLE, // Previous state the player was in
+    on_ground: true, // Is the player touching the ground
     crop: {
         x: 0, // Animation offset
         y: 0 // Sprite type offset
@@ -49,14 +50,20 @@ export const player = {
             right: 0,
             left: 240,
             max: 10,
-            buffer: 6,
+            buffer: 6
         },
         run: {
             right: 480,
             left: 720,
             max: 10,
-            buffer: 6,
+            buffer: 6
         },
+        jump: {
+            right: 960,
+            left: 1200,
+            max: 3,
+            buffer: 1
+        }
     },
     camera: {
         x: 0,

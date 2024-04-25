@@ -150,6 +150,7 @@ function game_loop() {
     else {
         // On the ground - Y position shouldnt update
         player.y_velocity = 0;
+        player.on_ground = true;
     }
     // Apply Y velocity
     player.y += player.y_velocity;
@@ -167,6 +168,8 @@ function game_loop() {
                 // Update player Y pos to be on top of the collision tile
                 const offset = player.hitbox.y - player.y + player.hitbox.height;
                 player.y = collison_tiles[i].y - offset - 0.01;
+                // hack: Refactor to be done better
+                player.on_ground = true;
                 // No need to check for any more collisions
                 break;
             }
@@ -275,12 +278,24 @@ function pan_camera(direction) {
 function switch_state() {
     switch (player.state) {
         case player_state.JUMP:
-            if (player.previous_state != player_state.JUMP) {
-                //
+            if (player.previous_state != player_state.JUMP && player.on_ground) {
+                // Update States
                 player.previous_state = player.state;
                 player.state = player_state.JUMP;
-                //
+                player.on_ground = false;
+                // Apply jump to player
                 player.y_velocity = player.jump_height;
+                // Reset back to first sprite animation frame
+                player.sprite_animation.current_frame = 0;
+                // Set state specific sprite animation settings
+                player.sprite_animation.buffer = player.indices.jump.buffer;
+                player.sprite_animation.max = player.indices.jump.max - 1;
+                if (player.direction == player_dir.RIGHT) {
+                    player.crop.y = player.indices.jump.right;
+                }
+                else {
+                    player.crop.y = player.indices.jump.left;
+                }
             }
             break;
         case player_state.IDLE:
