@@ -48,25 +48,32 @@ export const player = {
 
     spritesheet: new Image(),               // Player spritesheet image 
 
-    sprite_animation: {                     //
+    sprite_animation: {                     // Player's sprite animation state
         current_frame: 0,                   //
         buffer: 0,                          //
         elapsed: 0,                         //
         max: 0,                             //
     },
 
-    indices: {
-        idle: {
+    indices: {                              // Spritesheet Offsets for player state
+        idle: {                             // Default state
             right: 0,
             left: 240,
             max: 10,
             buffer: 6,
         },
-        run: {
+        run: {                              // Movement State
             right: 480,
             left: 720,
             max: 10,
             buffer: 6,
         },
+    },
+
+    camera: {                               // Player locked camera
+        x: 0,
+        y: 0,
+        width: 600,
+        height: 250
     },
 };

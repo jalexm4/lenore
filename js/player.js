@@ -58,4 +58,10 @@ export const player = {
             buffer: 6,
         },
     },
+    camera: {
+        x: 0,
+        y: 0,
+        width: 600,
+        height: 250
+    },
 };

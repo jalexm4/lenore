@@ -90,6 +90,10 @@ function main()
     player.sprite_animation.buffer = player.indices.idle.buffer;
     player.sprite_animation.max = player.indices.idle.max - 1;
 
+    // Set inital camera x, y
+    player.camera.x = player.x - 120;
+    player.camera.y = player.y;
+
     // Setup Collision Blocks
     setup_collisions();
 
@@ -106,6 +110,10 @@ function game_loop()
 {
     // Clear previous frame
     context.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Scale canvas X axis value as it gets shifted by camera
+    context.save()
+    context.translate(background_x_offset, 0);
 
     // Checking for user input
     if (keys.space)
@@ -129,6 +137,12 @@ function game_loop()
 
     // Attempt to tranistion player to another state
     switch_state();
+
+    // Attempt to pan camera left/right if player is in a movement state
+    if (player.state == player_state.RUN || player.state == player_state.JUMP)
+    {
+        pan_camera(player.direction);
+    }
 
     // Apply X velocity 
     player.x += player.x_velocity;
@@ -231,6 +245,10 @@ function game_loop()
     player.hitbox.x = player.x + player.hitbox_x_offset;
     player.hitbox.y = player.y + player.hitbox_y_offset;
 
+    // Lock camera to player
+    player.camera.x = player.x - 120;
+    player.camera.y = player.y;
+
     // Iterate across the sprites to create a animation
     player.crop.x = player.sprite_animation.current_frame * player.width;
 
@@ -261,6 +279,10 @@ function game_loop()
     // context.fillStyle = "rgba(0, 255, 0, 0.5)";
     // context.fillRect(player.hitbox.x, player.hitbox.y, player.hitbox.width, player.hitbox.height);
 
+    // Visual - Draw Camera
+    context.fillStyle = "rgba(0, 255, 0, 0.5)";
+    context.fillRect(player.camera.x, player.camera.y, player.camera.width, player.camera.height);
+
     // Move to next player sprite frame
     player.sprite_animation.elapsed++;
     if (player.sprite_animation.elapsed % player.sprite_animation.buffer == 0)
@@ -276,8 +298,62 @@ function game_loop()
         }
     }
 
+    // Restore previously saved state at start of frame
+    context.restore();
+
     // Draw next frame
     requestAnimationFrame(game_loop);
+}
+
+// Simulate camera panning by shifting background map left/right
+function pan_camera(direction: player_dir)
+{
+    let pan = 0;
+
+    switch (direction)
+    {
+        case player_dir.RIGHT:
+            
+            // Check right hand side of the camera position
+            pan = player.camera.x + player.camera.width;
+            
+            // Don't pan past end of map
+            if (pan >= 3800)
+            {
+                break;
+            }
+    
+            // Take absolute of number to forbid negatives
+            if (pan >= canvas.width + Math.abs(background_x_offset))
+            {
+                // Simulate camera panning by moving background image
+                // Same speed as horiztonal velocity to trap player to screen
+                background_x_offset -= player.x_velocity;
+            }
+            
+            break;
+        case player_dir.LEFT:
+            
+            // Check left hand side of the camera position
+            pan = player.camera.x;
+
+            // Don't pan past start of the map
+            if (pan <= 0)
+            {
+                break;
+            }
+
+            // Take absolute of number to forbid negatives
+            if (pan <= Math.abs(background_x_offset))
+            {
+                // Shift to left (negative x)
+                background_x_offset -= player.x_velocity;
+            }
+
+            break;
+        default:
+            break;
+    }
 }
 
 // Switch player between its animation states
