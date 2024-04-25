@@ -5,6 +5,10 @@ export function save_audio_time() {
     const bg_audio = document.getElementById("bg-audio");
     // Event listener executes every update to the audio time
     bg_audio.addEventListener("timeupdate", () => {
+        if (localStorage.getItem("bg") === "0") {
+            bg_audio.pause();
+            return;
+        }
         // Store the current audio time with two decimal digits in stiring format
         localStorage.setItem("bg-audio-time", bg_audio.currentTime.toFixed(2));
     });

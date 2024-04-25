@@ -5,7 +5,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     // DOM is fully loaded
     // Array of settings that can toggled
-    const toggles = ["hitbox", "collision", "camera"];
+    const toggles = ["hitbox", "collision", "camera", "bg"];
     // Every setting category
     const settings = document.querySelectorAll(".setting-item");
     for (let i = 0; i < settings.length; i++) {
@@ -22,6 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
             toggle_setting(toggles[i]);
         });
     }
+    // bg should start at 1 not 0
+    localStorage.setItem("bg", "1");
 });
 function switch_setting_cat(setting) {
     // Remove current actively selecting setting.
@@ -48,4 +50,17 @@ function toggle_setting(key) {
         // Value is currently 0 / null (not been set before)
         localStorage.setItem(key, "1");
     }
+    // This code can be uncommented when audio is being played in settings page.
+    // if (key === "bg")
+    // {
+    //     const bg = document.getElementById("bg-audio") as HTMLAudioElement;
+    //     if (setting === "0")
+    //     {
+    //         bg.pause();
+    //     }
+    //     else
+    //     {
+    //         bg.play();
+    //     }
+    // }
 }
