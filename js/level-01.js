@@ -179,8 +179,8 @@ function game_loop() {
         context.fillRect(collison_tiles[i].x, collison_tiles[i].y, collison_tiles[i].width, collison_tiles[i].height);
     }
     // Visual - Draw Player Hitbox
-    context.fillStyle = "rgba(0, 255, 0, 0.5)";
-    context.fillRect(player.hitbox.x, player.hitbox.y, player.hitbox.width, player.hitbox.height);
+    // context.fillStyle = "rgba(0, 255, 0, 0.5)";
+    // context.fillRect(player.hitbox.x, player.hitbox.y, player.hitbox.width, player.hitbox.height);
     // Move to next player sprite frame
     player.sprite_animation.elapsed++;
     if (player.sprite_animation.elapsed % player.sprite_animation.buffer == 0) {
@@ -199,24 +199,30 @@ function switch_state() {
     switch (player.state) {
         case player_state.JUMP:
             if (player.previous_state != player_state.JUMP) {
+                //
                 player.previous_state = player.state;
+                player.state = player_state.JUMP;
+                //
                 player.y_velocity = player.jump_height;
             }
             break;
         case player_state.IDLE:
             // Transition to idle state if player is in a different state
             if (player.previous_state != player_state.IDLE) {
-                //
+                // Update states
                 player.previous_state = player.state;
+                player.state = player_state.IDLE;
                 // Reset back to first sprite animation frame
                 player.sprite_animation.current_frame = 0;
-                //
+                // Set state specific sprite animation settings
                 player.sprite_animation.buffer = player.indices.idle.buffer;
                 player.sprite_animation.max = player.indices.idle.max - 1;
                 if (player.direction == player_dir.RIGHT) {
+                    // Idle right crop on spritesheet
                     player.crop.y = player.indices.idle.right;
                 }
                 else {
+                    // Idle left crop on spritesheet
                     player.crop.y = player.indices.idle.left;
                 }
                 // Kill velocity
@@ -228,6 +234,7 @@ function switch_state() {
             if (player.previous_state != player_state.RUN) {
                 //
                 player.previous_state = player.state;
+                player.state = player_state.RUN;
                 // Reset back to first sprite animation frame
                 player.sprite_animation.current_frame = 0;
                 //
