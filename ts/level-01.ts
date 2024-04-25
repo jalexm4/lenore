@@ -16,6 +16,7 @@
 import { Keys, CollisionObject } from "./interfaces.js";            // Interfaces - Only for TypeScript
 import { player, player_state, player_dir } from "./player.js";     // Player object and enums
 import { handleKeyDown, handleKeyUp } from "./event_handlers.js";   // User Input Event Listeners
+import { save_audio_time } from "./audio.js";
 
 // Wait for all resources to be loaded before executing
 window.addEventListener("load", main);
@@ -79,6 +80,28 @@ function main()
     // Setup player hitbox
     player.hitbox.x = player.x + player.hitbox_x_offset;
     player.hitbox.y = player.y + player.hitbox_y_offset;
+
+    // Set audio time
+    const bg_audio = document.getElementById("bg-audio") as HTMLAudioElement;
+    
+    // Lower volume
+    bg_audio.volume = 0.2;
+
+    // Fetch background audio time if present
+    const time = localStorage.getItem("bg-audio-time");
+    if (time)
+    {
+        // Set background audio time
+        bg_audio.currentTime = Number(time);
+    }
+    else
+    {
+        // Play from the start
+        bg_audio.currentTime = 0;
+    }
+
+    // Start recording audio playback time
+    save_audio_time();
 
     // Set spritesheet
 
