@@ -186,18 +186,23 @@ function game_loop() {
     player.y, // Destination Y
     player.width, // Destination Width
     player.height);
-    // Visual - Draw Collision Blocks
-    // context.fillStyle = "rgba(255, 0, 0, 0.5)";
-    // for (let i = 0; i < collison_tiles.length; i++)
-    // {
-    //     context.fillRect(collison_tiles[i].x, collison_tiles[i].y, collison_tiles[i].width, collison_tiles[i].height);
-    // }
-    // Visual - Draw Player Hitbox
-    // context.fillStyle = "rgba(0, 255, 0, 0.5)";
-    // context.fillRect(player.hitbox.x, player.hitbox.y, player.hitbox.width, player.hitbox.height);
-    // Visual - Draw Camera
-    context.fillStyle = "rgba(0, 255, 0, 0.5)";
-    context.fillRect(player.camera.x, player.camera.y, player.camera.width, player.camera.height);
+    if (localStorage.getItem("hitbox") == "1") {
+        // Visual - Draw Player Hitbox
+        context.fillStyle = "rgba(0, 255, 0, 0.5)";
+        context.fillRect(player.hitbox.x, player.hitbox.y, player.hitbox.width, player.hitbox.height);
+    }
+    if (localStorage.getItem("collision") == "1") {
+        // Visual - Draw Collision Tiles
+        context.fillStyle = "rgba(255, 0, 0, 0.5)";
+        for (let i = 0; i < collison_tiles.length; i++) {
+            context.fillRect(collison_tiles[i].x, collison_tiles[i].y, collison_tiles[i].width, collison_tiles[i].height);
+        }
+    }
+    if (localStorage.getItem("camera") == "1") {
+        // Visual - Draw Camera
+        context.fillStyle = "rgba(0, 255, 0, 0.5)";
+        context.fillRect(player.camera.x, player.camera.y, player.camera.width, player.camera.height);
+    }
     // Move to next player sprite frame
     player.sprite_animation.elapsed++;
     if (player.sprite_animation.elapsed % player.sprite_animation.buffer == 0) {
