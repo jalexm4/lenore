@@ -31,6 +31,9 @@ header {
     /* Small 10% width corner for returning to landing page */
     flex: 0 0 10%;
     background-color: #333;
+
+    /* Ensure that link is clickable */
+    z-index: 1;
 }
 
 h1 {
