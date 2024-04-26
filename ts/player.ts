@@ -7,7 +7,8 @@ export enum player_state
 {
     IDLE = "IDLE",
     RUN = "RUN",
-    JUMP = "JUMP"
+    JUMP = "JUMP",
+    ATTACK_NO_MOVE = "ATTACK_NO_MOVE"
 }
 
 export enum player_dir
@@ -74,7 +75,12 @@ export const player = {
             left: 1200,
             max: 3,
             buffer: 1
-            
+        },
+        attack_no_move: {
+            right: 1440,
+            left: 1680,
+            max: 4,
+            buffer: 10
         }
     },
 
@@ -83,5 +89,5 @@ export const player = {
         y: 0,
         width: 600,
         height: 250
-    },
+    }
 };

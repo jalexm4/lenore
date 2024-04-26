@@ -15,6 +15,9 @@ export function handleKeyDown(keys) {
             case "Space":
                 keys.space = true;
                 break;
+            case "KeyX":
+                keys.x = true;
+                break;
             default:
                 // Some other key - Do nothing
                 break;
@@ -35,6 +38,9 @@ export function handleKeyUp(keys) {
                 break;
             case "Space":
                 keys.space = false;
+                break;
+            case "KeyX":
+                keys.x = false;
                 break;
             default:
                 // Some other key - Do nothing

@@ -65,6 +65,7 @@ const keys: Keys = {
     a: false,           // Move left on true
     d: false,           // Move right on true
     space: false,       // Jump on true
+    x: false,           // Attack on true (no movement)
 };
 
 // Starting function - Setups up the game
@@ -142,6 +143,10 @@ function game_loop()
     if (keys.space)
     {
         player.state = player_state.JUMP;
+    }
+    else if (keys.x)
+    {
+        player.state = player_state.ATTACK_NO_MOVE;
     }
     else if (keys.d && !keys.a)
     {
@@ -428,7 +433,33 @@ function switch_state()
             }
 
             break;
+        case player_state.ATTACK_NO_MOVE:
 
+            if (player.previous_state != player_state.ATTACK_NO_MOVE)
+            {
+                // Update States
+                player.previous_state = player.state;
+                player.state = player_state.ATTACK_NO_MOVE;
+
+                // Reset back to first sprite animation frame
+                player.sprite_animation.current_frame = 0;
+
+                // Set state specific sprite animation settings
+                player.sprite_animation.buffer = player.indices.attack_no_move.buffer;
+                player.sprite_animation.max = player.indices.attack_no_move.max - 1;
+
+                //
+                if (player.direction == player_dir.RIGHT)
+                {
+                    player.crop.y = player.indices.attack_no_move.right;
+                }
+                else
+                {
+                    player.crop.y = player.indices.attack_no_move.left;
+                }
+            }
+        
+            break;
         case player_state.IDLE:
 
             // Transition to idle state if player is in a different state

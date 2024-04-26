@@ -6,6 +6,7 @@ export var player_state;
     player_state["IDLE"] = "IDLE";
     player_state["RUN"] = "RUN";
     player_state["JUMP"] = "JUMP";
+    player_state["ATTACK_NO_MOVE"] = "ATTACK_NO_MOVE";
 })(player_state || (player_state = {}));
 export var player_dir;
 (function (player_dir) {
@@ -63,6 +64,12 @@ export const player = {
             left: 1200,
             max: 3,
             buffer: 1
+        },
+        attack_no_move: {
+            right: 1440,
+            left: 1680,
+            max: 4,
+            buffer: 10
         }
     },
     camera: {
@@ -70,5 +77,5 @@ export const player = {
         y: 0,
         width: 600,
         height: 250
-    },
+    }
 };
