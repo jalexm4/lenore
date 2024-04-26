@@ -9,7 +9,7 @@ html, body {
     height: 100%;
 
     /* Background image of the game */
-    background-image: url("/assets/ui/background.png");
+    background-image: url("/lenore/assets/ui/background.png");
     background-size: cover;
     background-position: center;
 
