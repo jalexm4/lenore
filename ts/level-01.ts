@@ -47,9 +47,9 @@ class collison_tile
 
 // --- Loaded Assets ---
 const background = new Image();
-background.src = "/assets/levels/level1.png";
+background.src = "/lenore/assets/levels/level1.png";
 
-player.spritesheet.src = "/assets/player/spritesheet.png";
+player.spritesheet.src = "/lenore/assets/player/spritesheet.png";
 
 // Canvas API
 const canvas = document.getElementById("canvas") as HTMLCanvasElement;
